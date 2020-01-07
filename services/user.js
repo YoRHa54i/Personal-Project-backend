@@ -6,9 +6,6 @@ const bcrypt = require('bcryptjs')
 module.exports = (app, db) => {
   app.post('/registerUser', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
-      if (err) {
-        console.error(err);
-      }
       if (info !== undefined) {
         console.error(info.message);
         res.status(403).send(info.message);
