@@ -6,7 +6,6 @@ const mediaService = require('./services/media')
 const cors = require('cors')
 const fileUpload = require('express-fileupload');
 const _ = require('lodash');
-
 const app = express()
 
 // import passport
@@ -18,6 +17,9 @@ app.use(cors())
 app.use(fileUpload({
   createParentPath: true
 }));
+
+app.use(express.static('uploads'))
+
 // parse application/json
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
