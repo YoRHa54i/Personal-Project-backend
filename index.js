@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const db = require('./models')
 const userService = require('./services/user')
-const mediaService = require('./services/media')
+const productService = require('./services/product')
 const cors = require('cors')
 const fileUpload = require('express-fileupload');
 const _ = require('lodash');
@@ -30,7 +30,7 @@ require('./config/passport/passport')
 
 db.sequelize.sync({ force: false }).then(() => {
   userService(app, db);
-  mediaService(app, db);
+  productService(app, db);
 
   app.listen(8080, () => console.log("Server is running on port 8080"))
 })

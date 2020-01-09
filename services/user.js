@@ -4,6 +4,25 @@ const config = require('../config/passport/passport');
 const bcrypt = require('bcryptjs')
 
 module.exports = (app, db) => {
+  app.get("/users", (req, res) => {
+    db.user
+      .findAll()
+      .then(result => {
+        res.status(201).json(result);
+      })
+      .catch(err => {
+        res.status(400).json({ message: err.message });
+      });
+  });
+
+  app.post("/isTokenExpired",
+    passport.authenticate("jwt", {
+      session: false
+    }),
+    (req, res) => {
+      res.status(200).json({ message: "Online" });
+    });
+
   app.post('/registerUser', (req, res, next) => {
     passport.authenticate('register', (err, user, info) => {
       if (info !== undefined) {
@@ -23,14 +42,12 @@ module.exports = (app, db) => {
             username: data.username,
           },
         }).then(user => {
-          console.log(user);
-          user
-            .update({
-              first_name: data.first_name,
-              last_name: data.last_name,
-              email: data.email,
-              role: data.role
-            })
+          user.update({
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            role: data.role
+          })
             .then(() => {
               console.log('user created in db');
               res.status(200).send({ message: 'user created' });
@@ -45,7 +62,7 @@ module.exports = (app, db) => {
   });
 
   app.post('/loginUser', (req, res, next) => {
-    console.log('req',req.body)
+    console.log('req', req.body)
     passport.authenticate('login', (err, users, info) => {
       if (err) {
         console.error(`error ${err}`);
@@ -90,7 +107,7 @@ module.exports = (app, db) => {
     return user
   }
 
-  
+
   app.put('/change-password', passport.authenticate('jwt', { session: false }),
     async function (req, res) {
       let targetUser = await db.user.findOne({ where: { id: req.user.id } })
